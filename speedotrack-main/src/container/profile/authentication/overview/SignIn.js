@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, navigate } from 'react';
+import axios from "axios";
 import { Link, NavLink, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +16,8 @@ const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 function SignIn() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
@@ -45,6 +48,53 @@ function SignIn() {
     });
   });
 
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+  
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+
+  
+  const submit = async (e, navigate) => {
+    e.preventDefault();
+    if (!username || !password) {
+        alert("Please fill in both username and password fields.");
+        return;
+    }
+    const url = "http://23.88.50.20:3000/api/login";
+    const requestData = {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    };
+
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
+
+    try {
+        const response = await axios.post(url, formData, requestData);
+        const responseData = response.data;
+        console.log(responseData);
+        localStorage.setItem("data", JSON.stringify(responseData));
+
+        if (response?.status === 200)
+            navigate(`/admin`);
+
+        else
+            alert(response?.message)
+    } catch (error) {
+        console.log("Error", error);
+    }
+};
+
+
+
+
+
   return (
     <AuthWrapper>
       <p className="auth-notice">
@@ -60,11 +110,12 @@ function SignIn() {
             rules={[{ message: 'Please input your username or Email!', required: true }]}
             initialValue="name@example.com"
             label="Username or Email Address"
+            onChange={handleUsernameChange}
           >
             <Input />
           </Form.Item>
           <Form.Item name="password" initialValue="123456" label="Password">
-            <Input.Password placeholder="Password" />
+            <Input.Password placeholder="Password" onChange={handlePasswordChange} />
           </Form.Item>
           <div className="auth-form-action">
             <Checkbox onChange={onChange} checked={state.checked}>
@@ -75,7 +126,7 @@ function SignIn() {
             </NavLink>
           </div>
           <Form.Item>
-            <Button className="btn-signin" htmlType="submit" type="primary" size="large">
+            <Button className="btn-signin" htmlType="submit" type="primary" size="large"  onClick={(e) => submit(e, navigate)}>
               {isLoading ? 'Loading...' : 'Sign In'}
             </Button>
           </Form.Item>
