@@ -17,12 +17,12 @@ const AuthLayout = (WraperContent) => {
                 <br />
                 <br />
                 <Heading as="h1">
-                  StrikingDash React <br />
-                  Web Application
+                  Speedo Track <br />
+                  Tracks Wherever You Go GPS
                 </Heading>
                 <img
                   className="auth-content-figure"
-                  src={require('../../../static/img/auth/Illustration.png')}
+                  src={require('./overview/images/bg.png')}
                   alt=""
                 />
               </Content>

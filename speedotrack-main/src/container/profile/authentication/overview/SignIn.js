@@ -1,4 +1,4 @@
-import React, { useState, useCallback, navigate } from 'react';
+import React, { useState, useCallback, useNavigate  } from 'react';
 import axios from "axios";
 import { Link, NavLink, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
@@ -91,10 +91,6 @@ function SignIn() {
     }
 };
 
-
-
-
-
   return (
     <AuthWrapper>
       <p className="auth-notice">
@@ -126,7 +122,7 @@ function SignIn() {
             </NavLink>
           </div>
           <Form.Item>
-            <Button className="btn-signin" htmlType="submit" type="primary" size="large"  onClick={(e) => submit(e, navigate)}>
+            <Button className="btn-signin" htmlType="submit" type="primary" size="large"  onClick={(e) => submit(e, useNavigate)}>
               {isLoading ? 'Loading...' : 'Sign In'}
             </Button>
           </Form.Item>
